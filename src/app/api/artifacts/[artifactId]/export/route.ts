@@ -70,7 +70,7 @@ export async function GET(
 
   // Return the file directly
   const filename = `${artifact.title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.docx`;
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "Content-Disposition": `attachment; filename="${filename}"`,

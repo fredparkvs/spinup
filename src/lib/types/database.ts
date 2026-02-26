@@ -48,6 +48,7 @@ export interface Database {
           platform_role?: PlatformRole;
           onboarding_completed?: boolean;
         };
+        Relationships: [];
       };
       teams: {
         Row: {
@@ -75,6 +76,7 @@ export interface Database {
           value_proposition?: ValueProposition | null;
           vp_updated_at?: string | null;
         };
+        Relationships: [];
       };
       team_members: {
         Row: {
@@ -92,6 +94,22 @@ export interface Database {
         Update: {
           role?: TeamMemberRole;
         };
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "team_members_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       team_invites: {
         Row: {
@@ -112,6 +130,15 @@ export interface Database {
         Update: {
           accepted?: boolean;
         };
+        Relationships: [
+          {
+            foreignKeyName: "team_invites_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       artifacts: {
         Row: {
@@ -139,6 +166,15 @@ export interface Database {
           status?: ArtifactStatus;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "artifacts_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       artifact_exports: {
         Row: {
@@ -156,6 +192,15 @@ export interface Database {
           created_by: string;
         };
         Update: never;
+        Relationships: [
+          {
+            foreignKeyName: "artifact_exports_artifact_id_fkey";
+            columns: ["artifact_id"];
+            isOneToOne: false;
+            referencedRelation: "artifacts";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       tool_notes: {
         Row: {
@@ -185,6 +230,7 @@ export interface Database {
           url_label?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
       journal_entries: {
         Row: {
@@ -221,6 +267,15 @@ export interface Database {
           metrics?: Record<string, unknown>;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "journal_entries_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       funding_tracker_entries: {
         Row: {
@@ -259,6 +314,15 @@ export interface Database {
           url?: string | null;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "funding_tracker_entries_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       advisor_entries: {
         Row: {
@@ -294,6 +358,15 @@ export interface Database {
           value_exchanged?: string | null;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "advisor_entries_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       trello_connections: {
         Row: {
@@ -319,10 +392,60 @@ export interface Database {
           webhook_id?: string | null;
           last_synced_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "trello_connections_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: true;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      trello_card_mappings: {
+        Row: {
+          id: string;
+          team_id: string;
+          artifact_id: string;
+          trello_card_id: string;
+          last_pulled_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          team_id: string;
+          artifact_id: string;
+          trello_card_id: string;
+        };
+        Update: {
+          last_pulled_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "trello_card_mappings_artifact_id_fkey";
+            columns: ["artifact_id"];
+            isOneToOne: true;
+            referencedRelation: "artifacts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "trello_card_mappings_team_id_fkey";
+            columns: ["team_id"];
+            isOneToOne: false;
+            referencedRelation: "teams";
+            referencedColumns: ["id"];
+          }
+        ];
       };
     };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      seed_funding_tracker: {
+        Args: { p_team_id: string };
+        Returns: undefined;
+      };
+    };
     Enums: {
       phase: Phase;
       platform_role: PlatformRole;
@@ -332,6 +455,9 @@ export interface Database {
       runway_mode: RunwayMode;
       compliance_status: ComplianceStatus;
       relationship_stage: RelationshipStage;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
     };
   };
 }

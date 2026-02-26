@@ -108,14 +108,13 @@ function parseExistingData(
       },
       nameSearch: {
         status:
-          ((raw.nameSearch as Record<string, unknown>)?.status as string) ?? "",
+          (((raw.nameSearch as Record<string, unknown>)?.status as string) ?? "") as CompanyNameData["nameSearch"]["status"],
         notes:
           ((raw.nameSearch as Record<string, unknown>)?.notes as string) ?? "",
       },
       trademarkSearch: {
         status:
-          ((raw.trademarkSearch as Record<string, unknown>)?.status as string) ??
-          "",
+          (((raw.trademarkSearch as Record<string, unknown>)?.status as string) ?? "") as CompanyNameData["trademarkSearch"]["status"],
         notes:
           ((raw.trademarkSearch as Record<string, unknown>)?.notes as string) ??
           "",

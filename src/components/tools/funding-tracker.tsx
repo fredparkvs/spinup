@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type ApplicationStatus = "not_started" | "preparing" | "submitted" | "awaiting" | "awarded" | "rejected";
+type ApplicationStatus = "not_started" | "preparing" | "submitted" | "awaiting_decision" | "awarded" | "rejected";
 
 interface FundingEntry {
   id: string;
@@ -29,7 +29,7 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
   not_started: "Not started",
   preparing: "Preparing",
   submitted: "Submitted",
-  awaiting: "Awaiting decision",
+  awaiting_decision: "Awaiting decision",
   awarded: "Awarded",
   rejected: "Rejected",
 };
@@ -38,7 +38,7 @@ const STATUS_VARIANTS: Record<ApplicationStatus, "secondary" | "outline" | "defa
   not_started: "secondary",
   preparing: "outline",
   submitted: "outline",
-  awaiting: "outline",
+  awaiting_decision: "outline",
   awarded: "default",
   rejected: "destructive",
 };
@@ -215,7 +215,7 @@ export function FundingTracker({ teamId, userId, isReadOnly, existingEntries }: 
   const existingFunderNames = new Set(entries.map((e) => e.funder));
   const availableTemplates = SA_FUNDERS.filter((f) => !existingFunderNames.has(f.funder));
   const awardedCount = entries.filter((e) => e.status === "awarded").length;
-  const activeCount = entries.filter((e) => ["preparing", "submitted", "awaiting"].includes(e.status)).length;
+  const activeCount = entries.filter((e) => ["preparing", "submitted", "awaiting_decision"].includes(e.status)).length;
 
   return (
     <div className="space-y-6">
