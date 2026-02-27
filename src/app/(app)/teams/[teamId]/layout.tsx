@@ -56,7 +56,7 @@ export default async function TeamLayout({ children, params }: TeamLayoutProps) 
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex flex-col h-dvh md:flex-row overflow-hidden">
       <AppSidebar
         teamId={teamId}
         teamName={team.name}

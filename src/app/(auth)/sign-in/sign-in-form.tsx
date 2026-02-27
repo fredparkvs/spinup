@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,16 +15,16 @@ function SubmitButton() {
       {pending ? (
         <>
           <Loader2 className="size-4 animate-spin" />
-          Creating account…
+          Signing in…
         </>
       ) : (
-        "Sign up"
+        "Sign in"
       )}
     </Button>
   );
 }
 
-export function SignUpForm({
+export function SignInForm({
   action,
   error,
 }: {
@@ -39,17 +40,6 @@ export function SignUpForm({
       )}
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="full_name">Full name</Label>
-        <Input
-          id="full_name"
-          name="full_name"
-          type="text"
-          placeholder="Jane Doe"
-          required
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
@@ -61,12 +51,19 @@ export function SignUpForm({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Password</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password">Password</Label>
+          <Link
+            href="/forgot-password"
+            className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
         <PasswordInput
           id="password"
           name="password"
-          placeholder="At least 6 characters"
-          minLength={6}
+          placeholder="Enter your password"
           required
         />
       </div>
