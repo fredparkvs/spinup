@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Loader2, Check, Plus, Trash2 } from "lucide-react";
+import { Save, Loader2, Check, Plus, Trash2, Download } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -437,11 +437,21 @@ export function FinancialModel({ teamId, userId, isReadOnly, existingArtifact }:
         </TabsContent>
       </Tabs>
 
-      {!isReadOnly && (
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? <><Loader2 className="size-4 animate-spin" />Saving...</> : saved ? <><Check className="size-4" />Saved</> : <><Save className="size-4" />Save Financial Model</>}
-        </Button>
-      )}
+      <div className="flex items-center gap-3">
+        {!isReadOnly && (
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? <><Loader2 className="size-4 animate-spin" />Saving...</> : saved ? <><Check className="size-4" />Saved</> : <><Save className="size-4" />Save Financial Model</>}
+          </Button>
+        )}
+        {artifactId && (
+          <a
+            href={`/api/artifacts/${artifactId}/export`}
+            className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            <Download className="size-4" />Download .docx
+          </a>
+        )}
+      </div>
     </div>
   );
 }

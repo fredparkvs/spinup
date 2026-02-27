@@ -231,6 +231,87 @@ const pitchDeck: DocRenderer = async (data, vp, teamName) => {
   return buildDoc(teamName, "Pitch Deck Narrative", children);
 };
 
+const financialModel: DocRenderer = async (data, _vp, teamName) => {
+  type RS = { name?: string; month1?: string; month3?: string; month6?: string; month12?: string; month18?: string; month24?: string; year3?: string; year4?: string; year5?: string };
+  type CI = { name?: string; type?: string; monthly?: string };
+  const streams = (data.revenue_streams as RS[]) ?? [];
+  const costs = (data.cost_items as CI[]) ?? [];
+
+  const fmtR = (v?: string | number) => {
+    const n = typeof v === "number" ? v : parseFloat(v ?? "");
+    return isNaN(n) ? "—" : `R ${n.toLocaleString("en-ZA", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  };
+  const sumCol = (key: keyof RS) =>
+    streams.reduce((acc, s) => acc + (parseFloat((s[key] as string) ?? "") || 0), 0);
+
+  const MONTH_KEYS: (keyof RS)[] = ["month1", "month3", "month6", "month12", "month18", "month24"];
+  const MONTH_LABELS = ["M1", "M3", "M6", "M12", "M18", "M24"];
+  const YEAR_KEYS: (keyof RS)[] = ["year3", "year4", "year5"];
+  const YEAR_LABELS = ["Year 3", "Year 4", "Year 5"];
+
+  const children: (Paragraph | Table)[] = [];
+
+  children.push(heading2("Revenue Projections"));
+  if (streams.length > 0) {
+    const colHeaders = ["Stream", ...MONTH_LABELS, ...YEAR_LABELS];
+    children.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({ children: colHeaders.map((h) => new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: h, bold: true, size: 18 })] })] })) }),
+          ...streams.map((s) =>
+            new TableRow({
+              children: [s.name ?? "—", ...MONTH_KEYS.map((k) => fmtR(s[k] as string)), ...YEAR_KEYS.map((k) => fmtR(s[k] as string))].map(
+                (v) => new TableCell({ children: [new Paragraph({ text: String(v) })] })
+              ),
+            })
+          ),
+          new TableRow({
+            children: ["Total", ...MONTH_KEYS.map((k) => fmtR(sumCol(k))), ...YEAR_KEYS.map((k) => fmtR(sumCol(k)))].map(
+              (v) => new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: String(v), bold: true })] })] })
+            ),
+          }),
+        ],
+      })
+    );
+  }
+
+  children.push(divider(), heading2("Cost Structure (Monthly)"));
+  if (costs.length > 0) {
+    const totalMonthly = costs.reduce((acc, c) => acc + (parseFloat(c.monthly ?? "") || 0), 0);
+    children.push(
+      new Table({
+        width: { size: 70, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({ children: ["Item", "Type", "Monthly"].map((h) => new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: h, bold: true })] })] })) }),
+          ...costs.map((c) =>
+            new TableRow({
+              children: [c.name ?? "—", c.type ?? "—", fmtR(c.monthly)].map(
+                (v) => new TableCell({ children: [new Paragraph({ text: String(v) })] })
+              ),
+            })
+          ),
+          new TableRow({
+            children: ["Total", "", fmtR(totalMonthly)].map(
+              (v) => new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: v, bold: true })] })] })
+            ),
+          }),
+        ],
+      })
+    );
+  }
+
+  children.push(divider(), heading2("Assumptions & Metrics"));
+  if (data.growth_rate_pct) { children.push(label("Monthly growth rate"), body(`${data.growth_rate_pct}%`)); }
+  if (data.churn_rate_pct) { children.push(label("Monthly churn rate"), body(`${data.churn_rate_pct}%`)); }
+  if (data.cac) { children.push(label("Customer acquisition cost (CAC)"), body(fmtR(String(data.cac)))); }
+  if (data.hiring_plan) { children.push(label("Hiring plan"), body(String(data.hiring_plan))); }
+  if (data.key_assumptions) { children.push(divider(), label("Key assumptions"), body(String(data.key_assumptions))); }
+  if (data.break_even_notes) { children.push(divider(), label("Break-even analysis"), body(String(data.break_even_notes))); }
+
+  return buildDoc(teamName, "Financial Model", children);
+};
+
 const complianceChecklist: DocRenderer = async (data, _vp, teamName) => {
   const items = (data.items as Record<string, { status?: string; notes?: string }>) ?? {};
   const LABELS: Record<string, string> = {
@@ -294,6 +375,7 @@ export const RENDERERS: Record<string, DocRenderer> = {
   competitive_landscape: competitiveLandscape,
   mvp_definition: mvpDefinition,
   pitch_deck: pitchDeck,
+  financial_model: financialModel,
   compliance_checklist: complianceChecklist,
   weekly_journal: weeklyJournal,
 };

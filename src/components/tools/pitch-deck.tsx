@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Loader2, Check } from "lucide-react";
+import { Save, Loader2, Check, Download } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -114,11 +114,21 @@ export function PitchDeck({ teamId, userId, isReadOnly, existingArtifact, valueP
         </div>
       ))}
 
-      {!isReadOnly && (
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? <><Loader2 className="size-4 animate-spin" />Saving...</> : saved ? <><Check className="size-4" />Saved</> : <><Save className="size-4" />Save Pitch Deck</>}
-        </Button>
-      )}
+      <div className="flex items-center gap-3">
+        {!isReadOnly && (
+          <Button onClick={handleSave} disabled={saving}>
+            {saving ? <><Loader2 className="size-4 animate-spin" />Saving...</> : saved ? <><Check className="size-4" />Saved</> : <><Save className="size-4" />Save Pitch Deck</>}
+          </Button>
+        )}
+        {artifactId && (
+          <a
+            href={`/api/artifacts/${artifactId}/export`}
+            className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            <Download className="size-4" />Download .docx
+          </a>
+        )}
+      </div>
     </div>
   );
 }
