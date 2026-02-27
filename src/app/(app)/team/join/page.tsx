@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   Card,
   CardContent,
@@ -21,8 +22,10 @@ export default async function JoinTeamPage() {
     redirect("/sign-in");
   }
 
+  const admin = createAdminClient();
+
   // Fetch pending invites for the current user's email
-  const { data: invites } = await supabase
+  const { data: invites } = await admin
     .from("team_invites")
     .select("id, team_id, role, teams(name)")
     .eq("email", user.email!)
@@ -33,50 +36,30 @@ export default async function JoinTeamPage() {
 
     const inviteId = formData.get("invite_id") as string;
     const teamId = formData.get("team_id") as string;
+    const role = (formData.get("role") as string) ?? "entrepreneur";
 
-    if (!inviteId || !teamId) {
-      return;
-    }
+    if (!inviteId || !teamId) return;
 
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect("/sign-in");
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      redirect("/sign-in");
-    }
+    const admin = createAdminClient();
 
     // Mark invite as accepted
-    const { error: inviteError } = await supabase
+    const { error: inviteError } = await admin
       .from("team_invites")
       .update({ accepted: true })
       .eq("id", inviteId);
 
-    if (inviteError) {
-      return;
-    }
-
-    // Fetch the invite to get the role
-    const { data: invite } = await supabase
-      .from("team_invites")
-      .select("role")
-      .eq("id", inviteId)
-      .single();
+    if (inviteError) return;
 
     // Create team_member record
-    const { error: memberError } = await supabase
-      .from("team_members")
-      .insert({
-        team_id: teamId,
-        user_id: user.id,
-        role: invite?.role ?? "entrepreneur",
-      });
-
-    if (memberError) {
-      return;
-    }
+    await admin.from("team_members").insert({
+      team_id: teamId,
+      user_id: user.id,
+      role: role as "entrepreneur" | "mentor",
+    });
 
     redirect(`/teams/${teamId}/tools/company-name`);
   }
@@ -119,21 +102,14 @@ export default async function JoinTeamPage() {
                     >
                       <div>
                         <p className="font-medium">{teamName}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground capitalize">
                           Role: {invite.role}
                         </p>
                       </div>
                       <form action={acceptInvite}>
-                        <input
-                          type="hidden"
-                          name="invite_id"
-                          value={invite.id}
-                        />
-                        <input
-                          type="hidden"
-                          name="team_id"
-                          value={invite.team_id}
-                        />
+                        <input type="hidden" name="invite_id" value={invite.id} />
+                        <input type="hidden" name="team_id" value={invite.team_id} />
+                        <input type="hidden" name="role" value={invite.role} />
                         <Button type="submit" size="sm">
                           Accept
                         </Button>
@@ -145,10 +121,10 @@ export default async function JoinTeamPage() {
             ) : (
               <div className="flex flex-col items-center gap-4 py-4">
                 <p className="text-sm text-muted-foreground">
-                  No pending invites
+                  No pending invites found for <strong>{user.email}</strong>
                 </p>
                 <Button asChild variant="outline">
-                  <Link href="/team/create">Create a new team</Link>
+                  <Link href="/team/create">Create a new team instead</Link>
                 </Button>
               </div>
             )}
