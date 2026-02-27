@@ -9,6 +9,7 @@ import {
   Settings,
   ShieldCheck,
   LogOut,
+  FileDown,
   FlaskConical,
   MessageSquare,
   Puzzle,
@@ -263,6 +264,18 @@ function SidebarContent({
             pathname={pathname}
           />
         ))}
+        <Link
+          href={`/teams/${teamId}/settings/exports`}
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+            pathname === `/teams/${teamId}/settings/exports`
+              ? "bg-primary/10 text-primary font-medium"
+              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          )}
+        >
+          <FileDown className="size-4 shrink-0" />
+          <span className="truncate">Exports</span>
+        </Link>
       </nav>
 
       <Separator />
