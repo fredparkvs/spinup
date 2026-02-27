@@ -18,7 +18,7 @@ export default async function ValuePropositionPage({
       description='Define your 10x advantage: "Our product helps [customer] achieve [benefit] by [how], an improvement of X over current options."'
       teamId={teamId}
       artifactType="value_proposition"
-      platformRole={ctx.platformRole}
+      platformRole={ctx.effectiveRole}
       currentUserId={ctx.user.id}
       adminNotes={ctx.adminNotes}
       mentorNotes={ctx.mentorNotes}

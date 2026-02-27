@@ -14,7 +14,7 @@ export default async function FundingTrackerPage({ params }: { params: Promise<{
     .eq("team_id", teamId)
     .order("created_at", { ascending: true });
   return (
-    <ToolLayout icon={Coins} title="Funding Application Tracker" description="Track your applications to SA grants and funders. Pre-populated with the main sources for research spinouts." teamId={teamId} artifactType="funding_tracker" platformRole={ctx.platformRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes}>
+    <ToolLayout icon={Coins} title="Funding Application Tracker" description="Track your applications to SA grants and funders. Pre-populated with the main sources for research spinouts." teamId={teamId} artifactType="funding_tracker" platformRole={ctx.effectiveRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes}>
       <FundingTracker
         teamId={teamId}
         userId={ctx.user.id}

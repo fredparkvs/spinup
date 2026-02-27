@@ -27,7 +27,7 @@ export default async function HypothesisTrackerPage({
       description="Track and test the core assumptions that underpin your business. Each hypothesis is a belief you must validate with real evidence."
       teamId={teamId}
       artifactType="hypothesis_tracker"
-      platformRole={ctx.platformRole}
+      platformRole={ctx.effectiveRole}
       currentUserId={ctx.user.id}
       adminNotes={ctx.adminNotes}
       mentorNotes={ctx.mentorNotes}

@@ -15,7 +15,7 @@ export default async function WeeklyJournalPage({ params }: { params: Promise<{ 
     .order("week_start", { ascending: false })
     .limit(52);
   return (
-    <ToolLayout icon={BookOpen} title="Weekly Progress Journal" description="One entry per week. What did you do, what did you learn, what changed? The running log of your startup's story." teamId={teamId} artifactType="weekly_journal" platformRole={ctx.platformRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes}>
+    <ToolLayout icon={BookOpen} title="Weekly Progress Journal" description="One entry per week. What did you do, what did you learn, what changed? The running log of your startup's story." teamId={teamId} artifactType="weekly_journal" platformRole={ctx.effectiveRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes}>
       <WeeklyJournal
         teamId={teamId}
         userId={ctx.user.id}

@@ -27,7 +27,7 @@ export default async function InterviewScriptsPage({
       description="Generate Mom Test-based interview scripts and log your findings. Aim for 5–7 interviews per persona to detect patterns."
       teamId={teamId}
       artifactType="interview_scripts"
-      platformRole={ctx.platformRole}
+      platformRole={ctx.effectiveRole}
       currentUserId={ctx.user.id}
       adminNotes={ctx.adminNotes}
       mentorNotes={ctx.mentorNotes}

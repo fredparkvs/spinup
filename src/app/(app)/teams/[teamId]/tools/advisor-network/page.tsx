@@ -14,7 +14,7 @@ export default async function AdvisorNetworkPage({ params }: { params: Promise<{
     .eq("team_id", teamId)
     .order("created_at", { ascending: true });
   return (
-    <ToolLayout icon={Users} title="Mentor & Advisor Network" description="Track the people who can help you succeed. Warm relationships take time — start building them before you need them." teamId={teamId} artifactType="advisor_network" platformRole={ctx.platformRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes}>
+    <ToolLayout icon={Users} title="Mentor & Advisor Network" description="Track the people who can help you succeed. Warm relationships take time — start building them before you need them." teamId={teamId} artifactType="advisor_network" platformRole={ctx.effectiveRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes}>
       <AdvisorNetwork
         teamId={teamId}
         userId={ctx.user.id}

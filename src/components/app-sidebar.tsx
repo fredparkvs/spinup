@@ -273,6 +273,18 @@ function SidebarContent({
           />
         ))}
         <Link
+          href={`/teams/${teamId}/settings`}
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+            pathname.startsWith(`/teams/${teamId}/settings`)
+              ? "bg-primary/10 text-primary font-medium"
+              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          )}
+        >
+          <Settings className="size-4 shrink-0" />
+          <span className="truncate">Settings</span>
+        </Link>
+        <Link
           href={`/teams/${teamId}/settings/exports`}
           className={cn(
             "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
@@ -288,21 +300,8 @@ function SidebarContent({
 
       <Separator />
 
-      {/* Bottom section: Settings, Admin, Sign out */}
+      {/* Bottom section: Admin (if applicable), Sign out */}
       <div className="p-2">
-        <Link
-          href={`/teams/${teamId}/settings`}
-          className={cn(
-            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
-            pathname.startsWith(`/teams/${teamId}/settings`)
-              ? "bg-primary/10 text-primary font-medium"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-          )}
-        >
-          <Settings className="size-4 shrink-0" />
-          <span>Settings</span>
-        </Link>
-
         {platformRole === "admin" && (
           <Link
             href="/admin"

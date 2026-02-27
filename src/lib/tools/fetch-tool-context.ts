@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import type { PlatformRole, TeamMemberRole, ValueProposition } from "@/lib/types/database";
 
@@ -13,6 +14,9 @@ export interface ToolContext {
     vp_updated_at: string | null;
   };
   platformRole: PlatformRole;
+  // effectiveRole is "mentor" when the user is a team mentor, "admin" for platform admins,
+  // or "entrepreneur" otherwise — used for the guidance notes panel
+  effectiveRole: "admin" | "mentor" | "entrepreneur";
   teamRole: TeamMemberRole | null;
   adminNotes: ToolNote[];
   mentorNotes: ToolNote[];
@@ -33,6 +37,7 @@ export async function fetchToolContext(
   artifactType: string
 ): Promise<ToolContext> {
   const supabase = await createClient();
+  const admin = createAdminClient();
 
   const {
     data: { user },
@@ -53,7 +58,8 @@ export async function fetchToolContext(
         .eq("team_id", teamId)
         .eq("user_id", user.id)
         .maybeSingle(),
-      supabase
+      // Use admin client to reliably read platform_role (bypasses JWT forwarding issues)
+      admin
         .from("profiles")
         .select("platform_role")
         .eq("id", user.id)
@@ -75,6 +81,14 @@ export async function fetchToolContext(
 
   if (!teamRole && platformRole !== "admin") redirect("/dashboard");
 
+  // effectiveRole elevates team mentors so they can add guidance notes
+  const effectiveRole: "admin" | "mentor" | "entrepreneur" =
+    platformRole === "admin"
+      ? "admin"
+      : teamRole === "mentor"
+        ? "mentor"
+        : "entrepreneur";
+
   const allNotes = (notesResult.data ?? []) as ToolNote[];
   const adminNotes = allNotes.filter((n) => n.author_role === "admin");
   const mentorNotes = allNotes.filter((n) => n.author_role === "mentor");
@@ -83,6 +97,7 @@ export async function fetchToolContext(
     user: { id: user.id, email: user.email ?? "" },
     team: teamResult.data as ToolContext["team"],
     platformRole,
+    effectiveRole,
     teamRole,
     adminNotes,
     mentorNotes,

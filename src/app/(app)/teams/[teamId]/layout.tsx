@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { AppSidebar } from "@/components/app-sidebar";
 import type { PlatformRole, TeamMemberRole } from "@/lib/types/database";
 
@@ -32,7 +33,10 @@ export default async function TeamLayout({ children, params }: TeamLayoutProps) 
     redirect("/dashboard");
   }
 
+  const adminClient = createAdminClient();
+
   // Fetch user's team membership and profile in parallel
+  // Profile read uses admin client to reliably get platform_role (bypasses JWT forwarding issues)
   const [memberResult, profileResult] = await Promise.all([
     supabase
       .from("team_members")
@@ -40,7 +44,7 @@ export default async function TeamLayout({ children, params }: TeamLayoutProps) 
       .eq("team_id", teamId)
       .eq("user_id", user.id)
       .single(),
-    supabase
+    adminClient
       .from("profiles")
       .select("platform_role")
       .eq("id", user.id)

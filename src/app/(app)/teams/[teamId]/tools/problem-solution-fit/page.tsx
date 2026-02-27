@@ -29,7 +29,7 @@ export default async function ProblemSolutionFitPage({
       description="A lightweight alternative to the Business Model Canvas. Focus on the most critical early question: do you have a real problem worth solving?"
       teamId={teamId}
       artifactType="problem_solution_fit"
-      platformRole={ctx.platformRole}
+      platformRole={ctx.effectiveRole}
       currentUserId={ctx.user.id}
       adminNotes={ctx.adminNotes}
       mentorNotes={ctx.mentorNotes}

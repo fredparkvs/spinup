@@ -29,7 +29,7 @@ export default async function CompetitiveLandscapePage({
       description="Identify existing solutions, their weaknesses, and the specific gap your research innovation fills. Include SA-specific context."
       teamId={teamId}
       artifactType="competitive_landscape"
-      platformRole={ctx.platformRole}
+      platformRole={ctx.effectiveRole}
       currentUserId={ctx.user.id}
       adminNotes={ctx.adminNotes}
       mentorNotes={ctx.mentorNotes}

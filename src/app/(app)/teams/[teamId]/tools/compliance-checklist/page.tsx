@@ -10,7 +10,7 @@ export default async function ComplianceChecklistPage({ params }: { params: Prom
   const supabase = await createClient();
   const { data: artifact } = await supabase.from("artifacts").select("id, data").eq("team_id", teamId).eq("artifact_type", "compliance_checklist").order("updated_at", { ascending: false }).limit(1).maybeSingle();
   return (
-    <ToolLayout icon={ShieldCheck} title="SA Compliance Checklist" description="The legal and regulatory steps every South African startup needs to complete. Work through these in order — the foundation items unblock everything else." teamId={teamId} artifactType="compliance_checklist" platformRole={ctx.platformRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes} artifactId={artifact?.id ?? null}>
+    <ToolLayout icon={ShieldCheck} title="SA Compliance Checklist" description="The legal and regulatory steps every South African startup needs to complete. Work through these in order — the foundation items unblock everything else." teamId={teamId} artifactType="compliance_checklist" platformRole={ctx.effectiveRole} currentUserId={ctx.user.id} adminNotes={ctx.adminNotes} mentorNotes={ctx.mentorNotes} artifactId={artifact?.id ?? null}>
       <ComplianceChecklist teamId={teamId} userId={ctx.user.id} isReadOnly={ctx.teamRole === "mentor"} existingArtifact={artifact ? { id: artifact.id, data: artifact.data as Record<string, unknown> } : null} />
     </ToolLayout>
   );
