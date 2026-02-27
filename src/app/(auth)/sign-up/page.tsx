@@ -1,22 +1,21 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { MailCheck } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { SignUpForm } from "./sign-up-form";
 
 export default async function SignUpPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; success?: string }>;
+  searchParams: Promise<{ error?: string; email?: string }>;
 }) {
   const params = await searchParams;
 
@@ -40,34 +39,39 @@ export default async function SignUpPage({
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
+      options: { data: { full_name: fullName } },
     });
 
     if (error) {
       redirect(`/sign-up?error=${encodeURIComponent(error.message)}`);
     }
 
-    redirect("/sign-up?success=Check your email to confirm your account");
+    redirect(`/sign-up?email=${encodeURIComponent(email)}`);
   }
 
-  if (params.success) {
+  // Success state — show when email param is present
+  if (params.email) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">Check your email</CardTitle>
-          <CardDescription>{params.success}</CardDescription>
+      <Card className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <CardHeader className="items-center text-center pb-2">
+          <div className="mb-3 flex size-16 items-center justify-center rounded-full bg-primary/10">
+            <MailCheck className="size-8 text-primary" />
+          </div>
+          <CardTitle className="text-xl">Check your inbox</CardTitle>
+          <CardDescription>
+            We sent a confirmation link to{" "}
+            <span className="font-medium text-foreground">{params.email}</span>
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-center space-y-2">
           <p className="text-sm text-muted-foreground">
-            We sent a confirmation link to your email address. Click the link to
-            activate your account.
+            Click the link in the email to activate your account, then sign in.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Can&apos;t find it? Check your spam or junk folder.
           </p>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="justify-center">
           <Link
             href="/sign-in"
             className="text-sm text-primary underline-offset-4 hover:underline"
@@ -88,51 +92,7 @@ export default async function SignUpPage({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={signUp} className="flex flex-col gap-4">
-          {params.error && (
-            <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-              {params.error}
-            </div>
-          )}
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="full_name">Full name</Label>
-            <Input
-              id="full_name"
-              name="full_name"
-              type="text"
-              placeholder="Jane Doe"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="At least 6 characters"
-              minLength={6}
-              required
-            />
-          </div>
-
-          <Button type="submit" className="w-full">
-            Sign up
-          </Button>
-        </form>
+        <SignUpForm action={signUp} error={params.error} />
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
