@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   Card,
   CardContent,
@@ -28,8 +29,8 @@ export default async function CreateTeamPage({
       redirect("/team/create?error=Team name is required");
     }
 
+    // Use regular client only to verify the user is authenticated
     const supabase = await createClient();
-
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -38,8 +39,11 @@ export default async function CreateTeamPage({
       redirect("/sign-in");
     }
 
+    // Use admin client for DB writes — bypasses RLS on trusted server-side code
+    const admin = createAdminClient();
+
     // Create the team
-    const { data: team, error: teamError } = await supabase
+    const { data: team, error: teamError } = await admin
       .from("teams")
       .insert({ name: name.trim(), institution: institution?.trim() || null })
       .select("id")
@@ -52,7 +56,7 @@ export default async function CreateTeamPage({
     }
 
     // Create team_member record linking user as entrepreneur
-    const { error: memberError } = await supabase
+    const { error: memberError } = await admin
       .from("team_members")
       .insert({ team_id: team.id, user_id: user.id, role: "entrepreneur" });
 
@@ -63,7 +67,7 @@ export default async function CreateTeamPage({
     }
 
     // Seed the funding tracker for the new team
-    await supabase.rpc("seed_funding_tracker", { p_team_id: team.id });
+    await admin.rpc("seed_funding_tracker", { p_team_id: team.id });
 
     redirect(`/teams/${team.id}/tools/company-name`);
   }
