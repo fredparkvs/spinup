@@ -1,5 +1,3 @@
-"use client";
-
 import { type ReactNode } from "react";
 import { type LucideIcon, Download } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
