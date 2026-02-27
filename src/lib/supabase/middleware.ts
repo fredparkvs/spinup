@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Public routes that don't require auth
-  const publicRoutes = ["/", "/sign-in", "/sign-up", "/forgot-password"];
+  const publicRoutes = ["/", "/sign-in", "/sign-up", "/forgot-password", "/update-password", "/auth/callback"];
   const isPublicRoute = publicRoutes.includes(pathname);
 
   // If no user and trying to access protected route, redirect to sign-in
