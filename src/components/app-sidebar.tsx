@@ -163,7 +163,15 @@ function SidebarContent({
     <div className="flex h-full flex-col">
       {/* Team header */}
       <div className="p-4">
-        <h2 className="text-base font-semibold truncate">{displayName}</h2>
+        <div className="flex items-center justify-between gap-2 mb-0.5">
+          <h2 className="text-base font-semibold truncate">{displayName}</h2>
+          <Link
+            href="/dashboard"
+            className="shrink-0 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Switch
+          </Link>
+        </div>
         {vpText ? (
           <TooltipProvider>
             <Tooltip>
@@ -348,9 +356,12 @@ export function AppSidebar(props: AppSidebarProps) {
             <SidebarContent {...props} onSignOut={handleSignOut} />
           </SheetContent>
         </Sheet>
-        <span className="ml-3 text-sm font-semibold truncate">
+        <Link
+          href="/dashboard"
+          className="ml-3 text-sm font-semibold truncate hover:text-muted-foreground transition-colors"
+        >
           {props.operatingName || props.teamName}
-        </span>
+        </Link>
       </div>
 
       {/* Desktop: fixed sidebar */}
