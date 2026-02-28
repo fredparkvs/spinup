@@ -15,9 +15,10 @@ import { SignUpForm } from "./sign-up-form";
 export default async function SignUpPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; email?: string }>;
+  searchParams: Promise<{ error?: string; email?: string; app?: string }>;
 }) {
   const params = await searchParams;
+  const isJobBoardSignup = params.app === "jobs";
 
   async function signUp(formData: FormData) {
     "use server";
@@ -25,13 +26,16 @@ export default async function SignUpPage({
     const fullName = formData.get("full_name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const app = formData.get("app") as string;
+
+    const appParam = app === "jobs" ? "&app=jobs" : "";
 
     if (!fullName || !email || !password) {
-      redirect("/sign-up?error=Please fill in all fields");
+      redirect(`/sign-up?error=Please fill in all fields${appParam}`);
     }
 
     if (password.length < 6) {
-      redirect("/sign-up?error=Password must be at least 6 characters");
+      redirect(`/sign-up?error=Password must be at least 6 characters${appParam}`);
     }
 
     const supabase = await createClient();
@@ -39,14 +43,14 @@ export default async function SignUpPage({
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: { data: { full_name: fullName, signup_app: app || "spinup" } },
     });
 
     if (error) {
-      redirect(`/sign-up?error=${encodeURIComponent(error.message)}`);
+      redirect(`/sign-up?error=${encodeURIComponent(error.message)}${appParam}`);
     }
 
-    redirect(`/sign-up?email=${encodeURIComponent(email)}`);
+    redirect(`/sign-up?email=${encodeURIComponent(email)}${appParam}`);
   }
 
   // Success state — show when email param is present
@@ -88,11 +92,13 @@ export default async function SignUpPage({
       <CardHeader>
         <CardTitle className="text-xl">Create an account</CardTitle>
         <CardDescription>
-          Enter your details to get started with SpinUp
+          {isJobBoardSignup
+            ? "Enter your details to join the SpinUp Job Board"
+            : "Enter your details to get started with SpinUp"}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <SignUpForm action={signUp} error={params.error} />
+        <SignUpForm action={signUp} error={params.error} app={params.app} />
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">
