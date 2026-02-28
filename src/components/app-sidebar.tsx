@@ -68,6 +68,12 @@ import {
   getSetupTools,
 } from "@/lib/artifacts/types";
 import type { ArtifactTypeInfo } from "@/lib/artifacts/types";
+
+const SCALE_TOOL_SLUGS = new Set([
+  "scaling-readiness", "gtm-playbook", "scale-unit-economics", "retention-tracker",
+  "hiring-planner", "founder-ceo-tracker", "okr-tracker", "process-docs",
+  "board-toolkit", "scale-financial-model", "fundraising-pipeline", "market-expansion",
+]);
 import type {
   Phase,
   PlatformRole,
@@ -180,9 +186,17 @@ function SidebarContent({
   const pathname = usePathname();
   const crossPhaseTools = getCrossPhaseTools();
   const setupTools = getSetupTools();
+  const scaleTools = getToolsByPhase("scale");
 
   const displayName = operatingName || teamName;
   const vpText = valueProposition ? formatVpStatement(valueProposition) : null;
+
+  // Detect accelerator mode: on the scale dashboard or any scale tool page
+  const pathSegments = pathname.split("/");
+  const lastSegment = pathSegments[pathSegments.length - 1];
+  const isAcceleratorMode =
+    pathname === `/teams/${teamId}/scale` ||
+    (pathname.startsWith(`/teams/${teamId}/tools/`) && SCALE_TOOL_SLUGS.has(lastSegment));
 
   return (
     <div className="flex h-full flex-col">
@@ -236,91 +250,119 @@ function SidebarContent({
 
       <Separator />
 
-      {/* Phase navigation */}
+      {/* Phase / Accelerator navigation */}
       <nav className="flex-1 overflow-y-auto px-2 py-2">
-        <p className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          Phases
-        </p>
-
-        {PHASES.map((phase) => {
-          const PhaseIcon = PHASE_ICONS[phase];
-          const tools = getToolsByPhase(phase);
-          const isCurrentPhase = currentPhase === phase;
-          // Check if any tool in this phase is active
-          const hasActiveTool = tools.some(
-            (t) =>
-              pathname === `/teams/${teamId}/tools/${toToolSlug(t.id)}`
-          );
-
-          return (
-            <Collapsible
-              key={phase}
-              defaultOpen={isCurrentPhase || hasActiveTool}
+        {isAcceleratorMode ? (
+          <>
+            <Link
+              href={`/teams/${teamId}/scale`}
+              className={cn(
+                "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors mb-1",
+                pathname === `/teams/${teamId}/scale`
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              )}
             >
-              <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground group">
-                <PhaseIcon className="size-4 shrink-0" />
-                <span className="flex-1 text-left">{PHASE_LABELS[phase]}</span>
-                {isCurrentPhase && (
-                  <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
-                    Current
-                  </span>
-                )}
-                <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="ml-2 border-l pl-2 py-1">
-                  {tools.map((tool) => (
-                    <ToolLink
-                      key={tool.id}
-                      tool={tool}
-                      teamId={teamId}
-                      pathname={pathname}
-                    />
-                  ))}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          );
-        })}
+              <Rocket className="size-4 shrink-0" />
+              <span className="truncate font-medium">Accelerator Home</span>
+            </Link>
+            <Separator className="my-2" />
+            <p className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Scale Tools
+            </p>
+            {scaleTools.map((tool) => (
+              <ToolLink
+                key={tool.id}
+                tool={tool}
+                teamId={teamId}
+                pathname={pathname}
+              />
+            ))}
+          </>
+        ) : (
+          <>
+            <p className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Phases
+            </p>
 
-        <Separator className="my-2" />
+            {PHASES.filter((p) => p !== "scale").map((phase) => {
+              const PhaseIcon = PHASE_ICONS[phase];
+              const tools = getToolsByPhase(phase);
+              const isCurrentPhase = currentPhase === phase;
+              const hasActiveTool = tools.some(
+                (t) => pathname === `/teams/${teamId}/tools/${toToolSlug(t.id)}`
+              );
 
-        {/* Cross-phase tools */}
-        <p className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          Always Available
-        </p>
-        {crossPhaseTools.map((tool) => (
-          <ToolLink
-            key={tool.id}
-            tool={tool}
-            teamId={teamId}
-            pathname={pathname}
-          />
-        ))}
-        <Link
-          href={`/teams/${teamId}/settings`}
-          className={cn(
-            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
-            pathname.startsWith(`/teams/${teamId}/settings`)
-              ? "bg-primary/10 text-primary font-medium"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-          )}
-        >
-          <Settings className="size-4 shrink-0" />
-          <span className="truncate">Settings</span>
-        </Link>
-        <Link
-          href={`/teams/${teamId}/settings/exports`}
-          className={cn(
-            "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
-            pathname === `/teams/${teamId}/settings/exports`
-              ? "bg-primary/10 text-primary font-medium"
-              : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-          )}
-        >
-          <FileDown className="size-4 shrink-0" />
-          <span className="truncate">Exports</span>
-        </Link>
+              return (
+                <Collapsible
+                  key={phase}
+                  defaultOpen={isCurrentPhase || hasActiveTool}
+                >
+                  <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground group">
+                    <PhaseIcon className="size-4 shrink-0" />
+                    <span className="flex-1 text-left">{PHASE_LABELS[phase]}</span>
+                    {isCurrentPhase && (
+                      <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-medium text-primary">
+                        Current
+                      </span>
+                    )}
+                    <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="ml-2 border-l pl-2 py-1">
+                      {tools.map((tool) => (
+                        <ToolLink
+                          key={tool.id}
+                          tool={tool}
+                          teamId={teamId}
+                          pathname={pathname}
+                        />
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
+
+            <Separator className="my-2" />
+
+            <p className="mb-1 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Always Available
+            </p>
+            {crossPhaseTools.map((tool) => (
+              <ToolLink
+                key={tool.id}
+                tool={tool}
+                teamId={teamId}
+                pathname={pathname}
+              />
+            ))}
+            <Link
+              href={`/teams/${teamId}/settings`}
+              className={cn(
+                "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+                pathname.startsWith(`/teams/${teamId}/settings`)
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              )}
+            >
+              <Settings className="size-4 shrink-0" />
+              <span className="truncate">Settings</span>
+            </Link>
+            <Link
+              href={`/teams/${teamId}/settings/exports`}
+              className={cn(
+                "flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
+                pathname === `/teams/${teamId}/settings/exports`
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              )}
+            >
+              <FileDown className="size-4 shrink-0" />
+              <span className="truncate">Exports</span>
+            </Link>
+          </>
+        )}
       </nav>
 
       <Separator />
