@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,12 +17,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Trash2, Loader2, Check, Eye, EyeOff, X } from "lucide-react";
-import { saveApplicantProfile, togglePublish } from "@/app/(app)/jobs/profile/actions";
-import type { JbApplicantProfile, AcademicEntry, WorkExperienceEntry } from "@/lib/jobs/types";
+import { Plus, Trash2, Loader2, Check, X, ArrowRight } from "lucide-react";
+import { saveApplicantProfile } from "@/app/(app)/jobs/profile/actions";
+import type { JbApplicantProfile, JbApplicantPreferences, AcademicEntry, WorkExperienceEntry, JbJobType, JbWorkMode } from "@/lib/jobs/types";
+
+const JOB_TYPE_LABELS: Record<JbJobType, string> = {
+  paid_internship: "Paid Internship",
+  unpaid_internship: "Unpaid Internship",
+  part_time_contractor: "Part-time Contractor",
+  full_time_contractor: "Full-time Contractor",
+  employment: "Employment",
+};
+
+const WORK_MODE_LABELS: Record<JbWorkMode, string> = {
+  remote: "Remote",
+  hybrid: "Hybrid",
+  in_person: "In Person",
+};
 
 interface Props {
   profile: JbApplicantProfile;
+  preferences: JbApplicantPreferences | null;
 }
 
 const EMPTY_ACADEMIC: AcademicEntry = {
@@ -42,7 +58,7 @@ const EMPTY_EXPERIENCE: WorkExperienceEntry = {
   current: false,
 };
 
-export function ApplicantProfileForm({ profile }: Props) {
+export function ApplicantProfileForm({ profile, preferences }: Props) {
   const [academics, setAcademics] = useState<AcademicEntry[]>(
     profile.academics.length > 0 ? profile.academics : [{ ...EMPTY_ACADEMIC }]
   );
@@ -101,47 +117,8 @@ export function ApplicantProfileForm({ profile }: Props) {
     });
   }
 
-  function handleTogglePublish() {
-    startTransition(async () => {
-      const fd = new FormData();
-      fd.set("profile_id", profile.id);
-      fd.set("is_published", (!profile.is_published).toString());
-      await togglePublish(fd);
-    });
-  }
-
   return (
     <div className="space-y-6">
-      {/* Publish status */}
-      <div className="flex items-center justify-between rounded-lg border p-4">
-        <div>
-          <p className="text-sm font-medium">Profile visibility</p>
-          <p className="text-xs text-muted-foreground">
-            {profile.is_published
-              ? "Your profile is visible to companies"
-              : "Your profile is hidden from companies"}
-          </p>
-        </div>
-        <Button
-          variant={profile.is_published ? "outline" : "default"}
-          size="sm"
-          onClick={handleTogglePublish}
-          disabled={isPending}
-        >
-          {profile.is_published ? (
-            <>
-              <EyeOff className="size-3.5" />
-              Unpublish
-            </>
-          ) : (
-            <>
-              <Eye className="size-3.5" />
-              Publish
-            </>
-          )}
-        </Button>
-      </div>
-
       <p className="text-xs text-muted-foreground">
         Your anonymous ID: <span className="font-mono font-medium">{profile.anonymous_id}</span>
       </p>
@@ -437,11 +414,61 @@ export function ApplicantProfileForm({ profile }: Props) {
         </CardContent>
       </Card>
 
+      {/* Preferences summary (read-only) */}
+      {preferences && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base">Job Preferences</CardTitle>
+              <Button asChild variant="ghost" size="sm" className="text-xs text-muted-foreground h-auto py-1">
+                <Link href="/jobs/preferences">Edit</Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {preferences.job_types && preferences.job_types.length > 0 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5">Looking for</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {preferences.job_types.map((jt) => (
+                    <Badge key={jt} variant="secondary" className="text-xs">
+                      {JOB_TYPE_LABELS[jt] ?? jt}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {preferences.work_modes && preferences.work_modes.length > 0 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5">Work arrangement</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {preferences.work_modes.map((wm) => (
+                    <Badge key={wm} variant="outline" className="text-xs">
+                      {WORK_MODE_LABELS[wm] ?? wm}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {preferences.available_from && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Availability</p>
+                <p className="text-sm">
+                  From {new Date(preferences.available_from).toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" })}
+                  {preferences.available_until
+                    ? ` to ${new Date(preferences.available_until).toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" })}`
+                    : ""}
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       <Separator />
 
-      {/* Save button */}
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isPending}>
+      <div className="flex items-center justify-between">
+        <Button onClick={handleSave} disabled={isPending} variant="outline">
           {isPending ? (
             <>
               <Loader2 className="size-4 animate-spin" />
@@ -455,6 +482,13 @@ export function ApplicantProfileForm({ profile }: Props) {
           ) : (
             "Save profile"
           )}
+        </Button>
+
+        <Button asChild>
+          <Link href="/jobs/my-profile">
+            Next: Preview & Publish
+            <ArrowRight className="size-4" />
+          </Link>
         </Button>
       </div>
     </div>

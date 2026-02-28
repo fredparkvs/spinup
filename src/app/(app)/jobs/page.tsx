@@ -40,5 +40,5 @@ export default async function JobBoardPage() {
     redirect("/jobs/applicants");
   }
 
-  redirect("/jobs/profile");
+  redirect("/jobs/preferences");
 }

@@ -21,7 +21,7 @@ export default async function ApplicantProfilePage() {
           Build your anonymous CV. Companies will see this without your name or photo.
         </p>
       </div>
-      <ApplicantProfileForm profile={ctx.applicantProfile} />
+      <ApplicantProfileForm profile={ctx.applicantProfile} preferences={ctx.preferences} />
     </div>
   );
 }

@@ -36,9 +36,9 @@ interface NavItem {
 }
 
 const APPLICANT_NAV: NavItem[] = [
-  { label: "My Profile", href: "/jobs/profile", icon: User },
   { label: "Preferences", href: "/jobs/preferences", icon: SlidersHorizontal },
-  { label: "Preview", href: "/jobs/my-profile", icon: Eye },
+  { label: "My Profile", href: "/jobs/profile", icon: User },
+  { label: "Preview & Publish", href: "/jobs/my-profile", icon: Eye },
 ];
 
 const COMPANY_NAV: NavItem[] = [
