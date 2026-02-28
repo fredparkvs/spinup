@@ -17,16 +17,28 @@ import {
   Rocket,
   Calculator,
   TrendingDown,
+  TrendingUp,
   BadgeDollarSign,
   BarChart3,
+  BarChart2,
   Presentation,
   Sheet as SheetIcon,
   ClipboardCheck,
   BookOpen,
+  BookOpenCheck,
   Wallet,
   Users,
+  UsersRound,
   Building2,
+  Building,
   Target,
+  Radar,
+  Repeat2,
+  UserCog,
+  ListChecks,
+  FileText,
+  Handshake,
+  Globe,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -67,6 +79,7 @@ import { createClient } from "@/lib/supabase/client";
 // Map icon string names from ARTIFACT_TYPES to actual Lucide components
 const ICON_MAP: Record<string, LucideIcon> = {
   Building2,
+  Building,
   Target,
   FlaskConical,
   MessageSquare,
@@ -75,24 +88,36 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Rocket,
   Calculator,
   TrendingDown,
+  TrendingUp,
   BadgeDollarSign,
   BadgeRandSymbol: BadgeDollarSign, // fallback for BadgeRandSymbol
   BarChart3,
+  BarChart2,
   Presentation,
   Sheet: SheetIcon,
   ClipboardCheck,
   BookOpen,
+  BookOpenCheck,
   Wallet,
   Users,
+  UsersRound,
+  Radar,
+  Repeat2,
+  UserCog,
+  ListChecks,
+  FileText,
+  Handshake,
+  Globe,
 };
 
 const PHASE_ICONS: Record<Phase, LucideIcon> = {
   validate: FlaskConical,
   build_minimum: Rocket,
   sell_iterate: BarChart3,
+  scale: TrendingUp,
 };
 
-const PHASES: Phase[] = ["validate", "build_minimum", "sell_iterate"];
+const PHASES: Phase[] = ["validate", "build_minimum", "sell_iterate", "scale"];
 
 interface AppSidebarProps {
   teamId: string;

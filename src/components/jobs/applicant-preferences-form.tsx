@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Check } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Loader2, Check, ArrowRight } from "lucide-react";
 import { savePreferences } from "@/app/(app)/jobs/preferences/actions";
 import type { JbApplicantPreferences, JbJobType, JbWorkMode, JbAvailabilityType } from "@/lib/jobs/types";
 
@@ -164,8 +166,10 @@ export function ApplicantPreferencesForm({ profileId, preferences }: Props) {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isPending}>
+      <Separator />
+
+      <div className="flex items-center justify-between">
+        <Button onClick={handleSave} disabled={isPending} variant="outline">
           {isPending ? (
             <>
               <Loader2 className="size-4 animate-spin" />
@@ -179,6 +183,13 @@ export function ApplicantPreferencesForm({ profileId, preferences }: Props) {
           ) : (
             "Save preferences"
           )}
+        </Button>
+
+        <Button asChild>
+          <Link href="/jobs/profile">
+            Next: My Profile
+            <ArrowRight className="size-4" />
+          </Link>
         </Button>
       </div>
     </div>
