@@ -20,6 +20,18 @@ export type RelationshipStage =
   | "engaged"
   | "active";
 
+// Job Board enums
+export type JbRole = "applicant" | "company_member";
+export type JbJobType =
+  | "paid_internship"
+  | "unpaid_internship"
+  | "part_time_contractor"
+  | "full_time_contractor"
+  | "employment";
+export type JbWorkMode = "remote" | "hybrid" | "in_person";
+export type JbAvailabilityType = "start_date_only" | "date_range";
+export type JbOutreachStatus = "sent" | "viewed" | "responded";
+
 export interface Database {
   public: {
     Tables: {
@@ -436,6 +448,188 @@ export interface Database {
           }
         ];
       };
+      // Job Board tables
+      jb_user_roles: {
+        Row: {
+          id: string;
+          user_id: string;
+          role: JbRole;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          role: JbRole;
+        };
+        Update: {
+          role?: JbRole;
+        };
+        Relationships: [];
+      };
+      jb_applicant_profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          anonymous_id: string;
+          academics: Record<string, unknown>[];
+          software_skills: string[];
+          languages: string[];
+          location_city: string | null;
+          location_country: string | null;
+          willing_to_relocate: boolean;
+          work_experience: Record<string, unknown>[];
+          personality_description: string | null;
+          looking_for: string | null;
+          is_published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          anonymous_id?: string;
+          academics?: Record<string, unknown>[];
+          software_skills?: string[];
+          languages?: string[];
+          location_city?: string | null;
+          location_country?: string | null;
+          willing_to_relocate?: boolean;
+          work_experience?: Record<string, unknown>[];
+          personality_description?: string | null;
+          looking_for?: string | null;
+          is_published?: boolean;
+        };
+        Update: {
+          academics?: Record<string, unknown>[];
+          software_skills?: string[];
+          languages?: string[];
+          location_city?: string | null;
+          location_country?: string | null;
+          willing_to_relocate?: boolean;
+          work_experience?: Record<string, unknown>[];
+          personality_description?: string | null;
+          looking_for?: string | null;
+          is_published?: boolean;
+        };
+        Relationships: [];
+      };
+      jb_applicant_preferences: {
+        Row: {
+          id: string;
+          applicant_profile_id: string;
+          job_types: JbJobType[];
+          availability_type: JbAvailabilityType;
+          available_from: string | null;
+          available_until: string | null;
+          work_modes: JbWorkMode[];
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          applicant_profile_id: string;
+          job_types?: JbJobType[];
+          availability_type?: JbAvailabilityType;
+          available_from?: string | null;
+          available_until?: string | null;
+          work_modes?: JbWorkMode[];
+        };
+        Update: {
+          job_types?: JbJobType[];
+          availability_type?: JbAvailabilityType;
+          available_from?: string | null;
+          available_until?: string | null;
+          work_modes?: JbWorkMode[];
+        };
+        Relationships: [];
+      };
+      jb_companies: {
+        Row: {
+          id: string;
+          name: string;
+          what_we_do: string | null;
+          how_we_work: string | null;
+          website_url: string | null;
+          team_linkedin: Record<string, unknown>[];
+          is_verified: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          name: string;
+          what_we_do?: string | null;
+          how_we_work?: string | null;
+          website_url?: string | null;
+          team_linkedin?: Record<string, unknown>[];
+        };
+        Update: {
+          name?: string;
+          what_we_do?: string | null;
+          how_we_work?: string | null;
+          website_url?: string | null;
+          team_linkedin?: Record<string, unknown>[];
+          is_verified?: boolean;
+        };
+        Relationships: [];
+      };
+      jb_company_members: {
+        Row: {
+          id: string;
+          company_id: string;
+          user_id: string;
+          is_owner: boolean;
+          joined_at: string;
+        };
+        Insert: {
+          company_id: string;
+          user_id: string;
+          is_owner?: boolean;
+        };
+        Update: {
+          is_owner?: boolean;
+        };
+        Relationships: [];
+      };
+      jb_favourites: {
+        Row: {
+          id: string;
+          company_id: string;
+          applicant_profile_id: string;
+          favourited_by: string;
+          note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          company_id: string;
+          applicant_profile_id: string;
+          favourited_by: string;
+          note?: string | null;
+        };
+        Update: {
+          note?: string | null;
+        };
+        Relationships: [];
+      };
+      jb_outreach: {
+        Row: {
+          id: string;
+          company_id: string;
+          applicant_profile_id: string;
+          sent_by: string;
+          message: string | null;
+          status: JbOutreachStatus;
+          sent_at: string;
+          viewed_at: string | null;
+        };
+        Insert: {
+          company_id: string;
+          applicant_profile_id: string;
+          sent_by: string;
+          message?: string | null;
+        };
+        Update: {
+          status?: JbOutreachStatus;
+          viewed_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -455,6 +649,11 @@ export interface Database {
       runway_mode: RunwayMode;
       compliance_status: ComplianceStatus;
       relationship_stage: RelationshipStage;
+      jb_role: JbRole;
+      jb_job_type: JbJobType;
+      jb_work_mode: JbWorkMode;
+      jb_availability_type: JbAvailabilityType;
+      jb_outreach_status: JbOutreachStatus;
     };
     CompositeTypes: {
       [_ in never]: never;

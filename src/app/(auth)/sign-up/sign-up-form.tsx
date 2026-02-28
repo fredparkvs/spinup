@@ -26,12 +26,15 @@ function SubmitButton() {
 export function SignUpForm({
   action,
   error,
+  app,
 }: {
   action: (formData: FormData) => Promise<void>;
   error?: string;
+  app?: string;
 }) {
   return (
     <form action={action} className="flex flex-col gap-4">
+      {app && <input type="hidden" name="app" value={app} />}
       {error && (
         <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
