@@ -33,16 +33,19 @@ export default async function DashboardPage() {
   const profile = profileResult.data;
   const jbRoles = jbRolesResult.data?.map((r: { role: string }) => r.role) ?? [];
 
-  // Only redirect to SpinUp onboarding if user hasn't completed it AND has no JB roles
-  if (!profile?.onboarding_completed && jbRoles.length === 0) {
-    redirect("/onboarding");
-  }
-
   const teamCount = teamsResult.count ?? 0;
   const hasJbAccess = jbRoles.length > 0;
   const jbDetail = hasJbAccess
     ? `Signed up as ${jbRoles.join(" & ").replace("company_member", "company")}`
     : undefined;
+
+  // Determine app-specific CTA text
+  const spinupCta =
+    !profile?.onboarding_completed && teamCount === 0
+      ? "Get Started"
+      : teamCount > 0
+      ? "Open"
+      : "Get Started";
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 px-4 py-12">
@@ -57,8 +60,8 @@ export default async function DashboardPage() {
           title="SpinUp Tools"
           description="Evidence-based tools for research spinouts"
           status="active"
-          href="/teams"
-          actionLabel={teamCount > 0 ? "Open" : "Get Started"}
+          href={!profile?.onboarding_completed && teamCount === 0 ? "/onboarding" : "/teams"}
+          actionLabel={spinupCta}
           detail={teamCount > 0 ? `${teamCount} team${teamCount !== 1 ? "s" : ""}` : undefined}
         />
 
