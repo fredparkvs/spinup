@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           title="Accelerator"
           description="Structured programmes to scale your venture"
           status="new"
-          href={teamCount > 0 ? "/teams" : "/onboarding"}
+          href="/accelerator"
           actionLabel={teamCount > 0 ? "Open" : "Get Started"}
         />
       </div>
