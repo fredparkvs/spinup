@@ -1,4 +1,4 @@
-export type Phase = "validate" | "build_minimum" | "sell_iterate";
+export type Phase = "validate" | "build_minimum" | "sell_iterate" | "scale";
 export type PlatformRole = "admin" | "mentor" | "entrepreneur";
 export type TeamMemberRole = "entrepreneur" | "mentor";
 export type ArtifactStatus = "draft" | "complete";

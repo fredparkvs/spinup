@@ -115,6 +115,91 @@ export const ARTIFACT_TYPES: ArtifactTypeInfo[] = [
     phase: "sell_iterate",
     icon: "ClipboardCheck",
   },
+  // Scale (Accelerator — Phase 4)
+  {
+    id: "scaling_readiness",
+    label: "Scaling Readiness Assessment",
+    description: "Diagnose your readiness across all 6 scaling pillars and identify your top constraints",
+    phase: "scale",
+    icon: "Radar",
+  },
+  {
+    id: "gtm_playbook",
+    label: "GTM Playbook Builder",
+    description: "Codify your sales process into a repeatable playbook any team member can run",
+    phase: "scale",
+    icon: "BookOpenCheck",
+  },
+  {
+    id: "scale_unit_economics",
+    label: "Unit Economics Dashboard",
+    description: "Track segmented CAC, cohort LTV, NRR, GRR, and payback period against growth-stage benchmarks",
+    phase: "scale",
+    icon: "TrendingUp",
+  },
+  {
+    id: "retention_tracker",
+    label: "Revenue Retention Tracker",
+    description: "Cohort-based NRR and GRR analysis separating logo churn from revenue churn",
+    phase: "scale",
+    icon: "Repeat2",
+  },
+  {
+    id: "hiring_planner",
+    label: "Hiring & Org Design Planner",
+    description: "Map your headcount stage, identify gaps, and build the hiring infrastructure your stage requires",
+    phase: "scale",
+    icon: "UsersRound",
+  },
+  {
+    id: "founder_ceo_tracker",
+    label: "Founder-to-CEO Tracker",
+    description: "Track your progress through the 5 identity shifts required to lead a scaling company",
+    phase: "scale",
+    icon: "UserCog",
+  },
+  {
+    id: "okr_tracker",
+    label: "OKR Planning & Tracking",
+    description: "Quarterly objectives and key results with weekly check-ins and cascading team goals",
+    phase: "scale",
+    icon: "ListChecks",
+  },
+  {
+    id: "process_docs",
+    label: "Process Documentation",
+    description: "Document core business processes so what works doesn't live only in someone's head",
+    phase: "scale",
+    icon: "FileText",
+  },
+  {
+    id: "board_toolkit",
+    label: "Board Development Toolkit",
+    description: "Build from advisory board to structured governance with templates and composition guidance",
+    phase: "scale",
+    icon: "Building",
+  },
+  {
+    id: "scale_financial_model",
+    label: "Growth-Stage Financial Model",
+    description: "Scenario-based projections with departmental budgets, dilution modelling, and cap table",
+    phase: "scale",
+    icon: "BarChart2",
+  },
+  {
+    id: "fundraising_pipeline",
+    label: "Fundraising Pipeline Manager",
+    description: "Track investor relationships through the full VC pipeline with due diligence checklists",
+    phase: "scale",
+    icon: "Handshake",
+  },
+  {
+    id: "market_expansion",
+    label: "Market Expansion Planner",
+    description: "Evaluate and plan international market entry with a structured Go/No-Go framework",
+    phase: "scale",
+    icon: "Globe",
+  },
   // Cross-phase
   {
     id: "weekly_journal",
@@ -143,12 +228,14 @@ export const PHASE_LABELS: Record<Phase, string> = {
   validate: "Validate",
   build_minimum: "Build Minimum",
   sell_iterate: "Sell & Iterate",
+  scale: "Scale",
 };
 
 export const PHASE_DESCRIPTIONS: Record<Phase, string> = {
   validate: "Test your assumptions with real customers before building",
   build_minimum: "Build the minimum product that proves your value proposition",
   sell_iterate: "Sell to customers and iterate based on real feedback",
+  scale: "Build the systems, team, and capital strategy to scale repeatably",
 };
 
 export function getToolsByPhase(phase: Phase) {

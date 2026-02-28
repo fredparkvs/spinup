@@ -39,10 +39,10 @@ const apps = [
     icon: Rocket,
     app: "Accelerator",
     description:
-      "Structured programmes to help South African founders scale their ventures, raise capital, and expand into new markets.",
-    cta: "Coming Soon",
-    href: null,
-    badge: "Coming Soon",
+      "Structured programmes to help research spinout founders scale their ventures, raise capital, and expand into new markets.",
+    cta: "Get Started",
+    href: "/sign-up",
+    badge: "New",
   },
 ];
 
