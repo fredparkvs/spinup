@@ -6,23 +6,43 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from "@/components/ui/card";
+import { FlaskConical, Briefcase, Rocket } from "lucide-react";
 
-const phases = [
+const apps = [
   {
-    title: "Validate",
+    phase: "Phase 1",
+    title: "Idea to Break Even",
+    icon: FlaskConical,
+    app: "SpinUp Tools",
     description:
-      "Test your research-based idea against real market demand. Identify your beachhead customer, map the problem, and build conviction before you build anything.",
+      "Evidence-based tools to help research spinout founders validate their idea, scope a minimum product, land first customers, and reach break-even faster.",
+    cta: "Get Started",
+    href: "/sign-up",
+    badge: null,
   },
   {
-    title: "Build Minimum",
+    phase: "Phase 2",
+    title: "Building a Team",
+    icon: Briefcase,
+    app: "Job Board",
     description:
-      "Scope and ship the smallest viable version of your product. Focus on what matters, avoid over-engineering, and get something into users' hands fast.",
+      "A bias-free job board built for South African startups. Applicants share skills and experience anonymously — companies discover talent on merit, not appearance.",
+    cta: "Join the Job Board",
+    href: "/sign-up?app=jobs",
+    badge: "New",
   },
   {
-    title: "Sell & Iterate",
+    phase: "Phase 3",
+    title: "Scale",
+    icon: Rocket,
+    app: "Accelerator",
     description:
-      "Land your first paying customers and learn from live feedback. Refine your offer, tighten your unit economics, and chart the path to break-even.",
+      "Structured programmes to help South African founders scale their ventures, raise capital, and expand into new markets.",
+    cta: "Coming Soon",
+    href: null,
+    badge: "Coming Soon",
   },
 ];
 
@@ -36,8 +56,7 @@ export default function Home() {
             SpinUp
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
-            Evidence-based tools to help South African research spinout founders
-            reach break-even faster
+            Tools for South African Startups
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button asChild size="lg">
@@ -49,34 +68,67 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Phases */}
+        {/* Apps */}
         <section className="w-full max-w-5xl px-6 pb-24">
           <h2 className="mb-8 text-center text-2xl font-semibold tracking-tight">
-            Three phases to break-even
+            From first idea to scale
           </h2>
           <div className="grid gap-6 sm:grid-cols-3">
-            {phases.map((phase, index) => (
-              <Card key={phase.title}>
-                <CardHeader>
-                  <CardDescription className="text-xs font-medium uppercase tracking-wider">
-                    Phase {index + 1}
-                  </CardDescription>
-                  <CardTitle className="text-xl">{phase.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {phase.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+            {apps.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <Card
+                  key={item.title}
+                  className={item.href ? "" : "opacity-70"}
+                >
+                  <CardHeader>
+                    <CardDescription className="text-xs font-medium uppercase tracking-wider">
+                      Phase {index + 1}
+                    </CardDescription>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Icon className="size-5 text-primary" />
+                      <CardTitle className="text-xl">{item.title}</CardTitle>
+                    </div>
+                    <p className="text-xs text-muted-foreground font-medium">
+                      {item.app}
+                      {item.badge && (
+                        <span className="ml-2 inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                          {item.badge}
+                        </span>
+                      )}
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    {item.href ? (
+                      <Button asChild variant="outline" size="sm" className="w-full">
+                        <Link href={item.href}>{item.cta}</Link>
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        disabled
+                      >
+                        {item.cta}
+                      </Button>
+                    )}
+                  </CardFooter>
+                </Card>
+              );
+            })}
           </div>
         </section>
       </main>
 
       {/* Footer */}
       <footer className="border-t py-8 text-center text-sm text-muted-foreground">
-        Built for South African research spinouts
+        Built for South African startups
       </footer>
     </div>
   );
