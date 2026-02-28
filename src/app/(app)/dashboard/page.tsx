@@ -79,7 +79,9 @@ export default async function DashboardPage() {
           icon={Rocket}
           title="Accelerator"
           description="Structured programmes to scale your venture"
-          status="coming_soon"
+          status="new"
+          href={teamCount > 0 ? "/teams" : "/onboarding"}
+          actionLabel={teamCount > 0 ? "Open" : "Get Started"}
         />
       </div>
     </div>
