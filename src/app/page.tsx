@@ -71,22 +71,23 @@ export default function Home() {
             <div className="grid gap-10 sm:grid-cols-3">
               <div className="space-y-3">
                 <div className="w-10 h-1 bg-red-600 rounded-full" />
-                <h3 className="font-semibold text-lg">Research-Based</h3>
+                <h3 className="font-semibold text-lg">Evidence-Based</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Every tool is grounded in evidence from studies of thousands of startup
                   outcomes — from GALI&apos;s database of 23,000 ventures to Startup Genome&apos;s
-                  scaling research. The benchmarks, red flags, and frameworks are not opinions.
-                  They are what the data says works.
+                  scaling research. The benchmarks and frameworks are not opinions. They are
+                  what the data says works — curated by entrepreneurs who have been through
+                  the journey themselves.
                 </p>
               </div>
               <div className="space-y-3">
                 <div className="w-10 h-1 bg-red-600 rounded-full" />
                 <h3 className="font-semibold text-lg">Mentor-Supported</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Every tool has a built-in space for mentor and administrator guidance. Mentors
-                  see exactly what founders are building in real time, add coaching prompts, and
-                  flag concerns — without taking over the wheel. The founder leads; the mentor
-                  guides.
+                  Research consistently shows that long-term, relationship-based mentorship
+                  with practical, in-context guidance produces significantly better startup
+                  outcomes than one-off advice or generic coaching. SpinUp is built around
+                  that finding — mentors guide founders through the work, not around it.
                 </p>
               </div>
               <div className="space-y-3">
@@ -95,7 +96,8 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   No slides to read. No frameworks to memorise. Every tool begins with a clear
                   explanation of why it matters and ends with a concrete output — something you
-                  can share with a customer, a mentor, or an investor.
+                  can share with a customer, a mentor, or an investor. If you want to go
+                  deeper, ask your mentor or an AI.
                 </p>
               </div>
             </div>
@@ -326,7 +328,7 @@ export default function Home() {
               Get Started
             </Link>
           </div>
-          <p>© 2025 SpinUp. Built for South African startups.</p>
+          <p>© 2026 Fred Lutz. Built for and by South African Entrepreneurs.</p>
         </div>
       </footer>
     </div>

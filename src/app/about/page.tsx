@@ -191,7 +191,7 @@ export default function AboutPage() {
               Get Started
             </Link>
           </div>
-          <p>© 2025 SpinUp. Built for South African startups.</p>
+          <p>© 2026 Fred Lutz. Built for and by South African Entrepreneurs.</p>
         </div>
       </footer>
     </div>
