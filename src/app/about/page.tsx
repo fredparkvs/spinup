@@ -21,6 +21,12 @@ export default function AboutPage() {
           <nav className="flex items-center gap-5">
             <span className="text-sm font-medium hidden sm:block">About</span>
             <Link
+              href="/mentors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+            >
+              Mentors
+            </Link>
+            <Link
               href="/sign-in"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -185,6 +191,9 @@ export default function AboutPage() {
           <div className="flex items-center gap-6">
             <Link href="/about" className="hover:text-foreground transition-colors">
               About
+            </Link>
+            <Link href="/mentors" className="hover:text-foreground transition-colors">
+              Mentors
             </Link>
             <Link href="/sign-in" className="hover:text-foreground transition-colors">
               Sign In

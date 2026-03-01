@@ -76,17 +76,19 @@ function ScriptCard({
   const [expanded, setExpanded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [localData, setLocalData] = useState<ScriptData>(script.localData);
   const supabase = createClient();
 
-  const logCount = script.localData.interview_logs.length;
+  const logCount = localData.interview_logs.length;
 
   async function handleSave() {
     setSaving(true);
     await supabase.from("artifacts").update({
-      title: script.localData.persona || "Interview Script",
-      data: script.localData as unknown as Record<string, unknown>,
+      title: localData.persona || "Interview Script",
+      data: localData as unknown as Record<string, unknown>,
       updated_at: new Date().toISOString(),
     }).eq("id", script.id);
+    onUpdate(script.id, localData);
     setSaving(false);
   }
 
@@ -97,20 +99,23 @@ function ScriptCard({
   }
 
   function updateField(field: keyof ScriptData, value: unknown) {
-    onUpdate(script.id, { ...script.localData, [field]: value });
+    setLocalData((prev) => ({ ...prev, [field]: value }));
   }
 
   function addLog() {
     const newLog: InterviewLog = { id: crypto.randomUUID(), date: new Date().toISOString().split("T")[0], interviewee: "", key_findings: "" };
-    updateField("interview_logs", [...script.localData.interview_logs, newLog]);
+    setLocalData((prev) => ({ ...prev, interview_logs: [...prev.interview_logs, newLog] }));
   }
 
   function updateLog(logId: string, field: keyof InterviewLog, value: string) {
-    updateField("interview_logs", script.localData.interview_logs.map((l) => l.id === logId ? { ...l, [field]: value } : l));
+    setLocalData((prev) => ({
+      ...prev,
+      interview_logs: prev.interview_logs.map((l) => l.id === logId ? { ...l, [field]: value } : l),
+    }));
   }
 
   function deleteLog(logId: string) {
-    updateField("interview_logs", script.localData.interview_logs.filter((l) => l.id !== logId));
+    setLocalData((prev) => ({ ...prev, interview_logs: prev.interview_logs.filter((l) => l.id !== logId) }));
   }
 
   return (
@@ -118,7 +123,7 @@ function ScriptCard({
       <CardHeader className="pb-2 cursor-pointer" onClick={() => setExpanded((v) => !v)}>
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{script.localData.persona || "Untitled Script"}</p>
+            <p className="text-sm font-medium truncate">{localData.persona || "Untitled Script"}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{logCount} interview{logCount !== 1 ? "s" : ""} logged</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -133,11 +138,11 @@ function ScriptCard({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label className="text-xs">Customer persona</Label>
-              <Input placeholder="e.g. Operations manager at mid-size manufacturer" value={script.localData.persona} onChange={(e) => updateField("persona", e.target.value)} disabled={isReadOnly} />
+              <Input placeholder="e.g. Operations manager at mid-size manufacturer" value={localData.persona} onChange={(e) => updateField("persona", e.target.value)} disabled={isReadOnly} />
             </div>
             <div className="space-y-2">
               <Label className="text-xs">Core problem hypothesis</Label>
-              <Input placeholder="What you think their problem is" value={script.localData.problem_hypothesis} onChange={(e) => updateField("problem_hypothesis", e.target.value)} disabled={isReadOnly} />
+              <Input placeholder="What you think their problem is" value={localData.problem_hypothesis} onChange={(e) => updateField("problem_hypothesis", e.target.value)} disabled={isReadOnly} />
             </div>
           </div>
 
@@ -175,7 +180,7 @@ function ScriptCard({
             </div>
             <p className="text-xs text-muted-foreground">Aim for 5–7 interviews per persona to detect patterns. 15–20 for comprehensive validation.</p>
 
-            {script.localData.interview_logs.map((log) => (
+            {localData.interview_logs.map((log) => (
               <div key={log.id} className="rounded-md border p-3 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
@@ -206,7 +211,7 @@ function ScriptCard({
               <Label className="text-xs">Pattern Summary (after 5+ interviews)</Label>
               <Textarea
                 placeholder="Common themes, surprises, and invalidated assumptions across your interviews..."
-                value={script.localData.pattern_summary}
+                value={localData.pattern_summary}
                 onChange={(e) => updateField("pattern_summary", e.target.value)}
                 disabled={isReadOnly}
                 rows={4}

@@ -9,6 +9,7 @@ import {
   Settings,
   ShieldCheck,
   LogOut,
+  LayoutGrid,
   FileDown,
   FlaskConical,
   MessageSquare,
@@ -383,6 +384,14 @@ function SidebarContent({
             <span>Admin</span>
           </Link>
         )}
+
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+        >
+          <LayoutGrid className="size-4 shrink-0" />
+          <span>Switch Apps</span>
+        </Link>
 
         <button
           onClick={onSignOut}
