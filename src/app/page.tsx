@@ -40,7 +40,7 @@ export default function Home() {
           <div className="space-y-3">
             <h1 className="text-5xl font-bold tracking-tight sm:text-7xl">SpinUp</h1>
             <p className="text-xl text-muted-foreground sm:text-2xl">
-              From research lab to funded company.
+              From research to success.
             </p>
           </div>
           <p className="max-w-xl text-muted-foreground leading-relaxed">
@@ -121,7 +121,7 @@ export default function Home() {
                 <span className="text-xs font-semibold uppercase tracking-wider text-red-600">
                   Phase 1
                 </span>
-                <h3 className="text-2xl font-bold">SpinUp Tools — Incubator</h3>
+                <h3 className="text-2xl font-bold">Incubator</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   Seventeen evidence-based tools to take you from an unvalidated idea to
                   break-even. Validate your problem, define your minimum viable product, price
@@ -328,7 +328,7 @@ export default function Home() {
               Get Started
             </Link>
           </div>
-          <p>© 2026 Fred Lutz. Built for and by South African Entrepreneurs.</p>
+          <p>© 2026 Fred Lutz. Built by entrepreneurs for entrepreneurs.</p>
         </div>
       </footer>
     </div>

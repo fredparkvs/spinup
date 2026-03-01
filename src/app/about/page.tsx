@@ -41,7 +41,7 @@ export default function AboutPage() {
               Our Story
             </span>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl leading-tight">
-              Built by someone who has done the hard yards
+              Built by entrepreneurs for entrepreneurs
             </h1>
           </div>
           <p className="text-xl text-muted-foreground leading-relaxed">
@@ -59,16 +59,18 @@ export default function AboutPage() {
               <h2 className="text-2xl font-bold">Fred Lutz</h2>
               <div className="text-muted-foreground leading-relaxed space-y-4">
                 <p>
-                  I have spent years working alongside research spinout founders and scale-up
-                  teams in South Africa. I have sat in the room when an idea with genuine
-                  commercial potential died on the vine — not because the science was wrong,
-                  but because the founders did not know what to do next, and nobody gave them
-                  the right tools at the right time.
+                  I co-founded and spun out Custos Media Technologies and ran companies through
+                  scale-up. I have sat in the room when an idea with genuine commercial
+                  potential died on the vine — not because the science was wrong, but because
+                  the founders did not know what to do next, and nobody gave them the right
+                  tools at the right time. I am talking from experience.
                 </p>
                 <p>
-                  I have also seen what happens when founders get structured, evidence-based
-                  support: they move faster, waste less capital, and make better decisions. Not
-                  because they are smarter, but because they know what question to ask next.
+                  I have seen what happens when founders get structured, evidence-based support:
+                  they move faster, waste less capital, and make better decisions. Not because
+                  they are smarter, but because they know what question to ask next. And I tap
+                  my network for others who have been through the journey to help curate the
+                  data and frameworks that power SpinUp.
                 </p>
                 <p>
                   SpinUp is my attempt to systematise that support. Not as consulting, not as a
@@ -191,7 +193,7 @@ export default function AboutPage() {
               Get Started
             </Link>
           </div>
-          <p>© 2026 Fred Lutz. Built for and by South African Entrepreneurs.</p>
+          <p>© 2026 Fred Lutz. Built by entrepreneurs for entrepreneurs.</p>
         </div>
       </footer>
     </div>
