@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Save, Loader2, Check, AlertCircle } from "lucide-react";
+import { Save, Loader2, Check, AlertCircle, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -98,10 +99,11 @@ function readinessLabel(score: number): { label: string; variant: "default" | "s
 }
 
 export function ScalingReadiness({
-  teamId, userId, isReadOnly, existingArtifact,
+  teamId, userId, isReadOnly, existingArtifact, nextToolHref,
 }: {
   teamId: string; userId: string; isReadOnly: boolean;
   existingArtifact: { id: string; data: Record<string, unknown> } | null;
+  nextToolHref?: string;
 }) {
   const [scores, setScores] = useState<ScoreMap>(() => parseData(existingArtifact?.data ?? {}));
   const [artifactId, setArtifactId] = useState(existingArtifact?.id ?? null);
@@ -161,26 +163,9 @@ export function ScalingReadiness({
         </div>
       )}
 
-      {/* Score overview */}
-      {answeredCount > 0 && (
-        <div className="flex items-center gap-4 rounded-lg border p-4">
-          <div className="text-center min-w-[80px]">
-            <p className="text-3xl font-bold">{overall}%</p>
-            <p className="text-xs text-muted-foreground">Overall</p>
-          </div>
-          <div className="flex-1">
-            <Badge variant={readiness.variant} className="mb-2">{readiness.label}</Badge>
-            {overall < 75 && (
-              <p className="text-xs text-muted-foreground">
-                Focus areas: <span className="font-medium text-foreground">{constraints.join(", ")}</span>
-              </p>
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground">{answeredCount}/{totalQuestions} answered</p>
-        </div>
-      )}
-
       {/* Pillars */}
+      <p className="text-xs text-muted-foreground">1 = Not started · 2 = Early stage · 3 = Developing · 4 = Strong · 5 = Excellent</p>
+
       <div className="space-y-4">
         {PILLARS.map((pillar) => {
           const pScore = pillarScore(pillar, scores);
@@ -228,13 +213,41 @@ export function ScalingReadiness({
         })}
       </div>
 
+      {/* Score overview — shown at bottom */}
+      {answeredCount > 0 && (
+        <div className="flex items-center gap-4 rounded-lg border p-4">
+          <div className="text-center min-w-[80px]">
+            <p className="text-3xl font-bold">{overall}%</p>
+            <p className="text-xs text-muted-foreground">Overall</p>
+          </div>
+          <div className="flex-1">
+            <Badge variant={readiness.variant} className="mb-2">{readiness.label}</Badge>
+            {overall < 75 && (
+              <p className="text-xs text-muted-foreground">
+                Focus areas: <span className="font-medium text-foreground">{constraints.join(", ")}</span>
+              </p>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">{answeredCount}/{totalQuestions} answered</p>
+        </div>
+      )}
+
       <p className="text-xs text-muted-foreground">1 = Not started · 2 = Early stage · 3 = Developing · 4 = Strong · 5 = Excellent</p>
 
-      {!isReadOnly && (
-        <Button onClick={handleSave} disabled={saving || answeredCount === 0}>
-          {saving ? <><Loader2 className="size-4 animate-spin" />Saving...</> : saved ? <><Check className="size-4" />Saved</> : <><Save className="size-4" />Save Assessment</>}
-        </Button>
-      )}
+      <div className="flex items-center gap-3 flex-wrap">
+        {!isReadOnly && (
+          <Button onClick={handleSave} disabled={saving || answeredCount === 0}>
+            {saving ? <><Loader2 className="size-4 animate-spin" />Saving...</> : saved ? <><Check className="size-4" />Saved</> : <><Save className="size-4" />Save Assessment</>}
+          </Button>
+        )}
+        {nextToolHref && (
+          <Button asChild variant="outline">
+            <Link href={nextToolHref}>
+              Next: GTM Playbook <ArrowRight className="size-4 ml-1" />
+            </Link>
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
